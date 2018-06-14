@@ -76,6 +76,7 @@ class Ui_MainWindow(object):
         self.lineEdit_2.setSuffix(' грн')
         self.lineEdit_2.setValue(0)
         self.lineEdit_2.setDecimals(2)
+        self.lineEdit_2.setRange(0,9999999999999999)
         # Поле Ставка НБУ
         self.lineEdit_3 = QtWidgets.QDoubleSpinBox(self.centralwidget)
         self.lineEdit_3.setGeometry(QtCore.QRect(300, 20, 141, 41))
@@ -103,10 +104,6 @@ class Ui_MainWindow(object):
         self.radio.setChecked(True)
         self.radio.setGeometry(QtCore.QRect(10, 20, 171, 21))
         self.radio1.setGeometry(QtCore.QRect(10, 40, 171, 21))
-
-
-
-
 
 
         MainWindow.setCentralWidget(self.centralwidget)
