@@ -3,7 +3,8 @@ import workdays
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Расчет Пени")
+        MainWindow.setWindowTitle('Test')
+        MainWindow.setObjectName("MainWindow")
         MainWindow.resize(450, 350)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -12,6 +13,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
         self.centralwidget.setSizePolicy(sizePolicy)
         self.centralwidget.setObjectName("centralwidget")
+
 
         # Календарик №1
         self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
@@ -134,8 +136,16 @@ class Ui_MainWindow(object):
     def get_dept_days(self):
         must_payment_day = QtCore.QDate.toPyDate(self.dateEdit.date())
         payment_day = QtCore.QDate.toPyDate(self.dateEdit_2.date())
-        dept_days = abs((workdays.networkdays(payment_day, must_payment_day)))
-        return dept_days
+        try:
+            if must_payment_day > payment_day:
+                self.window = QtWidgets.QMessageBox.information(self.centralwidget,
+                                                                'Внимание!',
+                                                                'Дата начала задолжености'
+                                                                ' не может быть больше даты расчета!',
+                                                                buttons=QtWidgets.QMessageBox.Ok)
+        finally:
+                dept_days = abs((workdays.networkdays(payment_day, must_payment_day)))
+                return dept_days
 
     def get_multiplicator(self):
         multiple = None
