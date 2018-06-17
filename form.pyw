@@ -107,6 +107,9 @@ class Ui_MainWindow(object):
         self.radio.setGeometry(QtCore.QRect(10, 20, 171, 21))
         self.radio1.setGeometry(QtCore.QRect(10, 40, 171, 21))
 
+      # TODO Добавить ставку по кредиту (но не более 2% НБУ)
+      # TODO Дабвить Праздники
+      # TODO Сделать сервис по получению ставки НБУ
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
