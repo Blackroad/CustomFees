@@ -119,9 +119,6 @@ class Ui_MainWindow(object):
         self.lineEdit_4.setMaximum(2.0)
         self.lineEdit_4.setMinimum(0.01)
 
-
-
-      # TODO Добавить ставку по кредиту (но не более 2% НБУ)
       # TODO Дабвить Праздники
       # TODO Сделать сервис по получению ставки НБУ
 
