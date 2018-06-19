@@ -100,12 +100,26 @@ class Ui_MainWindow(object):
         self.label_5.setText('Ставка НБУ')
         # Переключатель
         self.box = QtWidgets.QGroupBox("Множитель ставки",self.centralwidget)
-        self.box.setGeometry(QtCore.QRect(300, 90, 130, 130))
+        self.box.setGeometry(QtCore.QRect(300, 90, 140, 130))
+
         self.radio = QtWidgets.QRadioButton(' x1',self.box)
         self.radio1 = QtWidgets.QRadioButton(' x2',self.box)
+        self.radio2 = QtWidgets.QRadioButton(' Ставка по кредиту', self.box)
         self.radio.setChecked(True)
         self.radio.setGeometry(QtCore.QRect(10, 20, 171, 21))
         self.radio1.setGeometry(QtCore.QRect(10, 40, 171, 21))
+        self.radio2.setGeometry(QtCore.QRect(10, 60, 171, 21))
+        self.radio2.toggled.connect(self.on_switch)
+        # Поле ставка по кредиту
+        self.lineEdit_4 = QtWidgets.QDoubleSpinBox(self.box)
+        self.lineEdit_4.setGeometry(10,90,90,21)
+        self.lineEdit_4.setDisabled(True)
+        self.lineEdit_4.setSingleStep(0.01)
+        self.lineEdit_4.setDecimals(2)
+        self.lineEdit_4.setMaximum(2.0)
+        self.lineEdit_4.setMinimum(0.01)
+
+
 
       # TODO Добавить ставку по кредиту (но не более 2% НБУ)
       # TODO Дабвить Праздники
@@ -133,8 +147,14 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Результат"))
 
     def on_click(self):
-        result = self.debt_fine(self.get_dept_days())
+        result = self.debt_fine(self.get_dept_days(),self.nbu_rate())
         self.lineEdit_2.setValue(result)
+
+    def on_switch(self):
+        if self.radio2.isChecked()==True:
+            self.lineEdit_4.setDisabled(False)
+        else:
+            self.lineEdit_4.setDisabled(True)
 
     def get_dept_days(self):
         must_payment_day = QtCore.QDate.toPyDate(self.dateEdit.date())
@@ -149,8 +169,8 @@ class Ui_MainWindow(object):
         finally:
                 dept_days = abs((workdays.networkdays(payment_day, must_payment_day)))
                 return dept_days
-
     def get_multiplicator(self):
+
         multiple = None
         if self.radio.isChecked() == True:
             multiple = 1
@@ -158,13 +178,18 @@ class Ui_MainWindow(object):
             multiple = 2
         return (multiple)
 
-    def debt_fine(self, dept_days):
-        multiple = self.get_multiplicator()
-        dept_value = self.lineEdit.value()
-        stavka = self.lineEdit_3.value() * multiple
-        sum = dept_value * 2 * stavka / 100 / 365 * dept_days
-        return sum
+    def nbu_rate(self):
+        if self.lineEdit_4.isEnabled() == False:
+            multiple = self.get_multiplicator()
+            rate = self.lineEdit_3.value() * multiple
+        else:
+            rate = self.lineEdit_4.value()
+        return rate
 
+    def debt_fine(self, dept_days, rate):
+        dept_value = self.lineEdit.value()
+        sum = dept_value * 2 * rate / 100 / 365 * dept_days
+        return sum
 
 
 
