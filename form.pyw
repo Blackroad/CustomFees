@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from holydays import MyHolydays
 import workdays
 
 class Ui_MainWindow(object):
@@ -156,6 +157,8 @@ class Ui_MainWindow(object):
     def get_dept_days(self):
         must_payment_day = QtCore.QDate.toPyDate(self.dateEdit.date())
         payment_day = QtCore.QDate.toPyDate(self.dateEdit_2.date())
+        state_holidays = MyHolydays()
+        holidays = state_holidays.get_holidays_for_selected_year(must_payment_day.year, payment_day.year)
         try:
             if must_payment_day > payment_day:
                 self.window = QtWidgets.QMessageBox.information(self.centralwidget,
@@ -164,10 +167,10 @@ class Ui_MainWindow(object):
                                                                 ' не может быть больше даты расчета!',
                                                                 buttons=QtWidgets.QMessageBox.Ok)
         finally:
-                dept_days = abs((workdays.networkdays(payment_day, must_payment_day)))
-                return dept_days
-    def get_multiplicator(self):
+                dept_days = abs((workdays.networkdays(payment_day, must_payment_day, holidays)))
+                return (dept_days)
 
+    def get_multiplicator(self):
         multiple = None
         if self.radio.isChecked() == True:
             multiple = 1
