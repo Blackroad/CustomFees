@@ -29,3 +29,25 @@ class MyHolydays:
         list_of_holidays = list_of_holidays + list_of_dayoffs
         return (list_of_holidays)
 
+    def get_easter_day(self,selected_year:int):
+        M = 24
+        N = 5
+        a = selected_year % 19
+        b = selected_year % 4
+        c = selected_year % 7
+        k = selected_year//100
+        p = (13 + 8*k)//25
+        q = k//4
+        d = (19*a + M)%30
+        e = (2*b + 4*c + 6*d + N) % 7
+        easter_date_new_style =  (22 + d + e)
+        easter_date_new_style2 = d + e - 9
+        print(a,b,c,k,p,q,d,e,easter_date_new_style)
+
+
+
+easter = MyHolydays()
+easter.get_easter_day(1777)
+
+
+
