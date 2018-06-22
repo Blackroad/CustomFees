@@ -30,8 +30,9 @@ class MyHolydays:
         return (list_of_holidays)
 
     def get_easter_day(self,selected_year:int):
-        M = 24
-        N = 5
+
+        M = 15
+        N = 6
         a = selected_year % 19
         b = selected_year % 4
         c = selected_year % 7
@@ -40,14 +41,20 @@ class MyHolydays:
         q = k//4
         d = (19*a + M)%30
         e = (2*b + 4*c + 6*d + N) % 7
-        easter_date_new_style =  (22 + d + e)
-        easter_date_new_style2 = d + e - 9
-        print(a,b,c,k,p,q,d,e,easter_date_new_style)
+        if d + e >= 9:
+            z = d + e
+            easter_date = (d + e - 9)
+            easter_month = (z + 25)//35 + 3
+            easter_day = z + 22 - 31*(easter_month//4)
+        else:
+            easter_date = (22 + d + e)
+print('easter date = ' , easter_date)
+
 
 
 
 easter = MyHolydays()
-easter.get_easter_day(1777)
+easter.get_easter_day(2018)
 
 
 
