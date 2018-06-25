@@ -30,31 +30,23 @@ class MyHolydays:
         return (list_of_holidays)
 
     def get_easter_day(self,selected_year:int):
-
         M = 15
         N = 6
         a = selected_year % 19
         b = selected_year % 4
         c = selected_year % 7
-        k = selected_year//100
-        p = (13 + 8*k)//25
-        q = k//4
         d = (19*a + M)%30
         e = (2*b + 4*c + 6*d + N) % 7
-        if d + e >= 9:
-            z = d + e
-            easter_date = (d + e - 9)
-            easter_month = (z + 25)//35 + 3
-            easter_day = z + 22 - 31*(easter_month//4)
-        else:
-            easter_date = (22 + d + e)
-print('easter date = ' , easter_date)
-
-
+        z = d + e
+        easter_month = (z + 25) // 35 + 3
+        easter_day = z + 22 - 31 * (easter_month // 4)
+        #will work only to 2100 year, if later , timedelta == 14
+        return (datetime.date(selected_year, easter_month, easter_day) + datetime.timedelta(13))
 
 
 easter = MyHolydays()
-easter.get_easter_day(2018)
+print (easter.get_easter_day(2018))
+
 
 
 
