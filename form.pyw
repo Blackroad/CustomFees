@@ -1,8 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from holydays import MyHolydays
+import datetime
 import workdays
 
 class Ui_MainWindow(object):
+    date =  datetime.date.today()
     def setupUi(self, MainWindow):
         MainWindow.setWindowTitle('Test')
         MainWindow.setObjectName("MainWindow")
@@ -26,8 +28,9 @@ class Ui_MainWindow(object):
         self.dateEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(2018, 6, 13), QtCore.QTime(0, 0, 0)))
         self.dateEdit.setMaximumDate(QtCore.QDate(7999, 12, 30))
         self.dateEdit.setCalendarPopup(True)
-        self.dateEdit.setDate(QtCore.QDate(2018, 6, 13))
+        self.dateEdit.setDate(QtCore.QDate(Ui_MainWindow.date.year, Ui_MainWindow.date.month, Ui_MainWindow.date.day))
         self.dateEdit.setObjectName("dateEdit")
+        self.dateEdit.dateChanged.connect(self.print_holidays)
         # Календарик №2
         self.dateEdit_2 = QtWidgets.QDateEdit(self.centralwidget)
         self.dateEdit_2.setGeometry(QtCore.QRect(10, 80, 141, 41))
@@ -38,7 +41,7 @@ class Ui_MainWindow(object):
         self.dateEdit_2.setDate(QtCore.QDate(2018, 6, 13))
         self.dateEdit_2.setMaximumDate(QtCore.QDate(7999, 12, 30))
         self.dateEdit_2.setCalendarPopup(True)
-        self.dateEdit_2.setDate(QtCore.QDate(2018, 6, 13))
+        self.dateEdit_2.setDate(QtCore.QDate(Ui_MainWindow.date.year, Ui_MainWindow.date.month, Ui_MainWindow.date.day))
         self.dateEdit_2.setObjectName("dateEdit_2")
 
         # Поле сумма задожености
@@ -119,8 +122,14 @@ class Ui_MainWindow(object):
         self.lineEdit_4.setDecimals(2)
         self.lineEdit_4.setMaximum(2.0)
         self.lineEdit_4.setMinimum(0.01)
+        # Поле для вывода дат пасхи и троицы
+        self.lineEdit_5 = QtWidgets.QPlainTextEdit(self.centralwidget)
+        self.lineEdit_5.setGeometry(165,20,121,51)
 
-      # TODO Дабвить Праздники
+
+
+
+
       # TODO Сделать сервис по получению ставки НБУ
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -169,6 +178,14 @@ class Ui_MainWindow(object):
         finally:
                 dept_days = abs((workdays.networkdays(payment_day, must_payment_day, holidays)))
                 return (dept_days)
+
+    def print_holidays(self):
+        selected_date = QtCore.QDate.toPyDate(self.dateEdit.date())
+        my_holidays = MyHolydays()
+        easter = my_holidays.get_easter_days(selected_date.year)
+        trinity = my_holidays.get_trinity(easter)
+        str_gen = 'Пасха {}\nТроица {}'.format(easter,trinity)
+        self.lineEdit_5.setPlainText(str_gen)
 
     def get_multiplicator(self):
         multiple = None
