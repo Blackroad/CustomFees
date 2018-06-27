@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from holydays import MyHolydays
+from requestservice import HtmlParsHelper
 import datetime
 import workdays
 
@@ -30,7 +31,7 @@ class Ui_MainWindow(object):
         self.dateEdit.setCalendarPopup(True)
         self.dateEdit.setDate(QtCore.QDate(Ui_MainWindow.date.year, Ui_MainWindow.date.month, Ui_MainWindow.date.day))
         self.dateEdit.setObjectName("dateEdit")
-        self.dateEdit.dateChanged.connect(self.print_holidays)
+        # self.dateEdit.dateChanged.connect(self.print_holidays)
         # Календарик №2
         self.dateEdit_2 = QtWidgets.QDateEdit(self.centralwidget)
         self.dateEdit_2.setGeometry(QtCore.QRect(10, 80, 141, 41))
@@ -92,6 +93,7 @@ class Ui_MainWindow(object):
         self.lineEdit_3.setValue(0)
         self.lineEdit_3.setDecimals(1)
         self.lineEdit_3.setSingleStep(0.5)
+        self.lineEdit_3.setDisabled(True)
 
         #Лейбла для Рузультата
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
@@ -123,14 +125,10 @@ class Ui_MainWindow(object):
         self.lineEdit_4.setMaximum(2.0)
         self.lineEdit_4.setMinimum(0.01)
         # Поле для вывода дат пасхи и троицы
-        self.lineEdit_5 = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.lineEdit_5.setGeometry(165,20,121,51)
+        # self.lineEdit_5 = QtWidgets.QPlainTextEdit(self.centralwidget)
+        # self.lineEdit_5.setGeometry(165,20,121,51)
 
-
-
-
-
-      # TODO Сделать сервис по получению ставки НБУ
+      # TODO Сделать отдельный поток для запуска апдейта ставки НБУ
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -179,13 +177,13 @@ class Ui_MainWindow(object):
                 dept_days = abs((workdays.networkdays(payment_day, must_payment_day, holidays)))
                 return (dept_days)
 
-    def print_holidays(self):
-        selected_date = QtCore.QDate.toPyDate(self.dateEdit.date())
-        my_holidays = MyHolydays()
-        easter = my_holidays.get_easter_days(selected_date.year)
-        trinity = my_holidays.get_trinity(easter)
-        str_gen = 'Пасха {}\nТроица {}'.format(easter,trinity)
-        self.lineEdit_5.setPlainText(str_gen)
+    # def print_holidays(self):
+    #     selected_date = QtCore.QDate.toPyDate(self.dateEdit.date())
+    #     my_holidays = MyHolydays()
+    #     easter = my_holidays.get_easter_days(selected_date.year)
+    #     trinity = my_holidays.get_trinity(easter)
+    #     str_gen = 'Пасха {}\nТроица {}'.format(easter,trinity)
+    #     self.lineEdit_5.setPlainText(str_gen)
 
     def get_multiplicator(self):
         multiple = None
@@ -216,7 +214,9 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
+    request = HtmlParsHelper()
     ui.setupUi(MainWindow)
+    ui.lineEdit_3.setValue(request.get_nbu_rate())
     MainWindow.show()
     sys.exit(app.exec_())
 
