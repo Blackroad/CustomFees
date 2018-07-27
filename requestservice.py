@@ -45,7 +45,7 @@ class HtmlParsHelper(HTMLSession):
 
     def get_dates(self,date_start,date_end,dept_value):
         all_rates = self.get_nbu_rate_for_all_periods()
-        pd = pandas.date_range(datetime.date(date_start),datetime.date(date_end))
+        pd = pandas.date_range(date_start,date_end)
         holidays = MyHolydays()
         sum = 0
         dept = 0

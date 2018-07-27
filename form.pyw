@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from holydays import MyHolydays
 from requestservice import HtmlParsHelper
 import datetime
+
 import workdays
 
 class Ui_MainWindow(object):
@@ -152,38 +153,23 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Результат"))
 
     def on_click(self):
-        result = self.debt_fine(self.get_dept_days(),self.nbu_rate())
-        self.lineEdit_2.setValue(result)
-
-    def on_switch(self):
-        if self.radio2.isChecked()==True:
-            self.lineEdit_4.setDisabled(False)
-        else:
-            self.lineEdit_4.setDisabled(True)
-
-    def get_dept_days(self):
-        must_payment_day = QtCore.QDate.toPyDate(self.dateEdit.date())
-        payment_day = QtCore.QDate.toPyDate(self.dateEdit_2.date())
-        state_holidays = MyHolydays()
-        holidays = state_holidays.get_holidays_for_selected_year(must_payment_day.year, payment_day.year)
+        html_parse = HtmlParsHelper()
         try:
-            if must_payment_day > payment_day:
+            if QtCore.QDate.toPyDate(self.dateEdit.date()) > QtCore.QDate.toPyDate(self.dateEdit_2.date()):
                 self.window = QtWidgets.QMessageBox.information(self.centralwidget,
                                                                 'Внимание!',
                                                                 'Дата начала задолжености'
                                                                 ' не может быть больше даты расчета!',
                                                                 buttons=QtWidgets.QMessageBox.Ok)
         finally:
-                dept_days = abs((workdays.networkdays(payment_day, must_payment_day, holidays)))
-                return (dept_days)
+            result = html_parse.get_dates(QtCore.QDate.toPyDate(self.dateEdit.date()), QtCore.QDate.toPyDate(self.dateEdit_2.date()), self.lineEdit.value())
+            self.lineEdit_2.setValue(result)
 
-    # def print_holidays(self):
-    #     selected_date = QtCore.QDate.toPyDate(self.dateEdit.date())
-    #     my_holidays = MyHolydays()
-    #     easter = my_holidays.get_easter_days(selected_date.year)
-    #     trinity = my_holidays.get_trinity(easter)
-    #     str_gen = 'Пасха {}\nТроица {}'.format(easter,trinity)
-    #     self.lineEdit_5.setPlainText(str_gen)
+    def on_switch(self):
+        if self.radio2.isChecked()==True:
+            self.lineEdit_4.setDisabled(False)
+        else:
+            self.lineEdit_4.setDisabled(True)
 
     def get_multiplicator(self):
         multiple = None
@@ -200,12 +186,6 @@ class Ui_MainWindow(object):
         else:
             rate = self.lineEdit_4.value()
         return rate
-
-    def debt_fine(self, dept_days, rate):
-        dept_value = self.lineEdit.value()
-        sum = dept_value * 2 * rate / 100 / 365 * dept_days
-        return sum
-
 
 
 
