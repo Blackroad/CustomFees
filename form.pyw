@@ -1,15 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from holydays import MyHolydays
+
 from requestservice import HtmlParsHelper
 import datetime
 
-import workdays
+
 
 class Ui_MainWindow(object):
     date =  datetime.date.today()
     def setupUi(self, MainWindow):
-        MainWindow.setWindowTitle('Test')
-        MainWindow.setObjectName("MainWindow")
         MainWindow.resize(450, 350)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -125,6 +123,7 @@ class Ui_MainWindow(object):
         self.lineEdit_4.setDecimals(2)
         self.lineEdit_4.setMaximum(2.0)
         self.lineEdit_4.setMinimum(0.01)
+
         # Поле для вывода дат пасхи и троицы
         # self.lineEdit_5 = QtWidgets.QPlainTextEdit(self.centralwidget)
         # self.lineEdit_5.setGeometry(165,20,121,51)
@@ -162,7 +161,7 @@ class Ui_MainWindow(object):
                                                                 ' не может быть больше даты расчета!',
                                                                 buttons=QtWidgets.QMessageBox.Ok)
         finally:
-            result = html_parse.get_dates(QtCore.QDate.toPyDate(self.dateEdit.date()), QtCore.QDate.toPyDate(self.dateEdit_2.date()), self.lineEdit.value())
+            result = html_parse.get_dates(QtCore.QDate.toPyDate(self.dateEdit.date()), QtCore.QDate.toPyDate(self.dateEdit_2.date()), self.lineEdit.value(),self.get_multiplicator())
             self.lineEdit_2.setValue(result)
 
     def on_switch(self):
@@ -177,26 +176,22 @@ class Ui_MainWindow(object):
             multiple = 1
         elif self.radio1.isChecked() == True:
             multiple = 2
+        elif self.lineEdit_4.isEnabled() == True:
+            multiple = self.lineEdit_4.value()
         return (multiple)
-
-    def nbu_rate(self):
-        if self.lineEdit_4.isEnabled() == False:
-            multiple = self.get_multiplicator()
-            rate = self.lineEdit_3.value() * multiple
-        else:
-            rate = self.lineEdit_4.value()
-        return rate
-
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    Main = Ui_MainWindow()
     request = HtmlParsHelper()
-    ui.setupUi(MainWindow)
-    ui.lineEdit_3.setValue(request.get_nbu_rate())
+    Main.setupUi(MainWindow)
+    try:
+        Main.lineEdit_3.setValue(request.get_nbu_rate())
+    except Exception as e:
+        print ('no connection or bad URL')
     MainWindow.show()
     sys.exit(app.exec_())
 
