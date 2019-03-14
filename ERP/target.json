@@ -1,0 +1,9 @@
+{
+  "web": {
+    "baseURL": "https://erp.globallogic.com/"
+  },
+  "user": {
+    "login": "vladyslav.velychko",
+    "pass": "Drulich1213141516"
+  }
+}
